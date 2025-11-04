@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:17
+    env_file:
+      - "./apps/db/.env"
+    ports:
+      - "25432:5432"
+    volumes:
+      - nest-handson-volume:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - web-handson-network
+  nest:
+    build:
+      context: ./apps/nest
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - "./apps/nest/.env"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - web-handson-network
+
+volumes:
+  nest-handson-volume:
+
+networks:
+  web-handson-network:
+    driver: bridge
